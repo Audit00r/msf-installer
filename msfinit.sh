@@ -18,13 +18,12 @@ RED="\033[0;31m"
 CYAN="\033[0;36m"
 NC="\033[0m" # No color
 
-# Ensure the script is run as root
+# root?
 if [ "$(id -u)" -ne 0 ]; then
   echo -e "${RED}This script must be run as root. Please execute it with 'sudo' or as the root user.${NC}"
   exit 1
 fi
 
-# Helper functions
 function print_phase() {
   echo -e "${CYAN}\n### $1 ###${NC}"
 }
@@ -92,7 +91,7 @@ echo -e "${GREEN}Installing Ruby $RUBYVERSION... This may take a while.${NC}"
 apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev &>/dev/null
 
 # Run Ruby installation
-(rbenv install $RUBYVERSION &>/tmp/rbenv_install.log) &
+(rbenv install --skip-existing $RUBYVERSION &>/tmp/rbenv_install.log) &
 pid=$!
 
 while kill -0 $pid 2>/dev/null; do
@@ -107,6 +106,7 @@ else
   echo -e "\n${RED}Ruby installation failed. Check /tmp/rbenv_install.log for details.${NC}"
   exit 1
 fi
+
 # Phase 5: Setting up PostgreSQL database
 print_phase "Phase 5: Setting up PostgreSQL database"
 cat <<EOF > /tmp/setup_postgres.sh
@@ -143,7 +143,7 @@ handle_error "Installing gems"
 echo -e "${GREEN}Gem installation completed.${NC}"
 
 # Phase 8: Creating symbolic links
-print_phase "Phase 8: Creating symbolic links for Metasploit commands"
+print_phase "Phase 8: Creating symbolic links for MSF"
 for MSF in $(ls msf*); do
   if [ -L "/usr/local/bin/$MSF" ]; then
     echo -e "${RED}Symbolic link for $MSF already exists. Skipping...${NC}"
@@ -151,7 +151,7 @@ for MSF in $(ls msf*); do
     ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF
   fi
 done
-echo -e "${GREEN}Symbolic links for Metasploit created.${NC}"
+echo -e "${GREEN}Symbolic links for Metasploit commands created.${NC}"
 
 # Phase 9: Database configuration
 print_phase "Phase 9: Configuring database"
