@@ -4,8 +4,10 @@ Run with sudo or root
 
 Tested on ubuntu and kali
 kali: you have to remove metasploit package
+```zsh
 sudo apt remove metasploit-framework
-
+service postgresql start
+```
 db user msf pass msf
 
 quick run
