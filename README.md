@@ -3,9 +3,10 @@ auto install metasploit-framework from github directly
 Run with sudo or root
 
 Tested on ubuntu and kali
-kali: you have to remove metasploit package
+kali: you have to remove metasploit package and ruby
+please take snapshot of kali before running the script
 ```zsh
-sudo apt remove metasploit-framework
+sudo apt remove metasploit-framework ruby
 service postgresql start
 ```
 db user msf pass msf
